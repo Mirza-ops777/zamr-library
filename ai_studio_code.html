@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="washi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zamr Library — Perpustakaan Digital Koleksi & Budaya Jepang</title>
+  <meta name="description" content="Perpustakaan digital bertema koleksi literatur, manga, arsip sejarah, bahasa, dan budaya Jepang." />
+
+  <!-- Tipografi Editorial & Jepang -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Tema Washi (Terang) */
+      --bg: #faf7f2;
+      --bg-elevated: #ffffff;
+      --bg-soft: #f2ece1;
+      --ink: #1e1b18;
+      --ink-muted: #5f584f;
+      --border: #e4dccf;
+      --accent: #b83b3b; /* Shu-iro / Merah Torii */
+      --accent-hover: #992c2c;
+      --accent-soft: rgba(184, 59, 59, 0.1);
+      --secondary: #3f6254; /* Matcha / Aotake */
+      --secondary-soft: rgba(63, 98, 84, 0.12);
+      --gold: #b48a3e;
+      --shadow-sm: 0 2px 10px rgba(30, 27, 24, 0.05);
+      --shadow-md: 0 12px 30px rgba(30, 27, 24, 0.08);
+      --radius: 14px;
+    }
+
+    [data-theme="yoru"] {
+      /* Tema Yoru (Gelap) */
+      --bg: #121110;
+      --bg-elevated: #1c1a18;
+      --bg-soft: #25221f;
+      --ink: #ede7de;
+      --ink-muted: #a69d91;
+      --border: #332e29;
+      --accent: #df5b57;
+      --accent-hover: #ec706c;
+      --accent-soft: rgba(223, 91, 87, 0.15);
+      --secondary: #6da38c;
+      --secondary-soft: rgba(109, 163, 140, 0.15);
+      --gold: #d5ab5d;
+      --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 16px 36px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .serif-jp {
+      font-family: "Shippori Mincho", "Noto Serif JP", Georgia, serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--bg) 86%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 70px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .kamon-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-family: "Noto Serif JP", serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-text span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: var(--ink-muted);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-soft {
+      background: var(--bg-soft);
+      border-color: transparent;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 56px 0 44px;
+      border-bottom: 1px solid var(--border);
+      background-image: radial-gradient(circle at 85% 20%, var(--accent-soft), transparent 42%),
+                        radial-gradient(circle at 12% 85%, var(--secondary-soft), transparent 40%);
+    }
+
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.045;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='40' viewBox='0 0 80 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40c0-11.046 8.954-20 20-20s20 8.954 20 20M40 40c0-11.046 8.954-20 20-20s20 8.954 20 20M20 20C20 8.954 28.954 0 40 0s20 8.954 20 20' fill='none' stroke='%238c6d53' stroke-width='1.5'/%3E%3C/svg%3E");
+    }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.35fr 0.9fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 3.6vw, 3rem);
+      line-height: 1.18;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--ink-muted);
+      font-size: 1.02rem;
+      max-width: 600px;
+      margin-bottom: 24px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 6px 8px 6px 16px;
+      box-shadow: var(--shadow-sm);
+      max-width: 620px;
+      gap: 8px;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--accent);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.95rem;
+      padding: 8px 0;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .stat-item strong {
+      display: block;
+      font-size: 1.35rem;
+      font-family: "Shippori Mincho", serif;
+      color: var(--ink);
+    }
+
+    .stat-item span {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+
+    /* Spotlight Filosofi Card */
+    .spotlight-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .spotlight-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .spotlight-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--secondary);
+    }
+
+    .spotlight-kanji {
+      font-size: 2.3rem;
+      line-height: 1.2;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .spotlight-romaji {
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .spotlight-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .spotlight-card p {
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      margin-bottom: 0;
+    }
+
+    /* Main Toolbar & Katalog */
+    .section {
+      padding: 44px 0;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .section-title {
+      font-size: 1.65rem;
+      letter-spacing: -0.01em;
+    }
+
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink-muted);
+      transition: all 0.2s;
+    }
+
+    .pill:hover {
+      border-color: var(--accent);
+      color: var(--ink);
+    }
+
+    .pill.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--bg);
+    }
+
+    .right-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .select-control {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .fav-toggle.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Grid Koleksi */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 22px;
+    }
+
+    .book-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    }
+
+    .book-cover {
+      position: relative;
+      height: 175px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .book-cover svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .cover-overlay-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(20, 18, 16, 0.72);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .cover-jp-stamp {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1e1b18;
+      font-family: "Noto Serif JP", serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid rgba(184, 59, 59, 0.35);
+    }
+
+    .book-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .book-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      color: var(--secondary);
+      font-weight: 700;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .book-title {
+      font-size: 1.08rem;
+      line-height: 1.35;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    .book-title:hover {
+      color: var(--accent);
+    }
+
+    .book-author {
+      font-size: 0.83rem;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }
+
+    .book-summary {
+      font-size: 0.86rem;
+      color: var(--ink-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: auto;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--bg-soft);
+      color: var(--ink-muted);
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .book-actions .btn {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+    }
+
+    .btn-icon {
+      flex: 0 0 auto !important;
+      width: 38px;
+      padding: 0 !important;
+    }
+
+    .btn-icon.saved {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Ensiklopedia Budaya Jepang */
+    .culture-section {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .culture-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+    }
+
+    .culture-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .culture-card .jp-term {
+      font-size: 1.25rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .culture-card h4 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .culture-card p {
+      font-size: 0.87rem;
+      color: var(--ink-muted);
+    }
+
+    /* Data Tools Bar */
+    .library-tools {
+      margin-top: 28px;
+      padding: 18px 20px;
+      background: var(--bg-elevated);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .library-tools-info h4 {
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+
+    .library-tools-info p {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+    }
+
+    .library-tools-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 54px 20px;
+      background: var(--bg-elevated);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+
+    .empty-state .kanji-empty {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(15, 13, 11, 0.65);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 780px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .reader-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .reader-thumb {
+      width: 120px;
+      height: 155px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .reader-thumb svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .reader-excerpt-box {
+      background: var(--bg-soft);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 18px 0;
+      font-family: "Shippori Mincho", Georgia, serif;
+      line-height: 1.85;
+    }
+
+    .reader-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+    }
+
+    .glossary-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .glossary-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .glossary-item strong {
+      display: block;
+      color: var(--accent);
+      font-family: "Noto Serif JP", serif;
+    }
+
+    .glossary-item small {
+      display: block;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    /* Form Tambah Koleksi */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 0.83rem;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      padding: 36px 0;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+    }
+
+    footer .proverb {
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 99;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .brand-text span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="#" class="brand">
+        <div class="kamon-logo">蔵</div>
+        <div class="brand-text">
+          <strong>Zamr Library</strong>
+          <span>座無図書館 • Koleksi & Budaya Jepang</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#katalog">Katalog Koleksi</a>
+        <a href="#budaya">Ensiklopedia Budaya</a>
+        <a href="#kelola">Kelola Arsip</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-soft" id="themeToggleBtn" title="Ganti Tema Washi / Yoru">
+          <span id="themeIcon">🌙</span>
+          <span id="themeLabel">Yoru</span>
+        </button>
+        <button class="btn btn-primary" id="openAddModalBtn">+ Tambah Koleksi</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-pattern"></div>
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-badge">🇯🇵 ARSIP DIGITAL JEJEPANGAN</div>
+        <h1 class="serif-jp">Menjelajahi Sastra, Tradisi, &amp; Jiwa Budaya Negeri Sakura</h1>
+        <p>
+          Selamat datang di <strong>Zamr Library</strong> — ruang baca digital terkurasi untuk karya sastra klasik Jepang, manga bersejarah, filsafat estetika, mitologi <em>Yokai</em>, hingga panduan aksara Jepang.
+        </p>
+
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" id="searchInput" placeholder="Cari judul, penulis, kanji, atau topik (misal: Dazai, Wabi-sabi, Samurai)..." />
+          <button class="btn btn-soft" id="clearSearchBtn" style="display:none; padding: 6px 10px;">Reset</button>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <strong id="totalCountStat">0</strong>
+            <span>Total Koleksi</span>
+          </div>
+          <div class="stat-item">
+            <strong id="catCountStat">5</strong>
+            <span>Bidang Budaya</span>
+          </div>
+          <div class="stat-item">
+            <strong id="favCountStat">0</strong>
+            <span>Tersimpan di Rak</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sorotan Filosofi Budaya -->
+      <aside class="spotlight-card">
+        <div class="spotlight-header">
+          <span class="spotlight-label">文化の光 • Sorotan Budaya</span>
+          <button class="btn btn-soft" id="nextSpotlightBtn" style="padding: 5px 10px; font-size: 0.78rem;">Berikutnya ↻</button>
+        </div>
+        <div class="spotlight-kanji serif-jp" id="spotlightJp">侘寂</div>
+        <div class="spotlight-romaji" id="spotlightRomaji">Wabi-sabi</div>
+        <h3 id="spotlightTitle">Keindahan dalam Ketidaksempurnaan</h3>
+        <p id="spotlightDesc">
+          Konsep estetika Jepang yang menghargai kesederhanaan, ketenangan, penuaan alami, dan hal-hal yang tidak sempurna namun autentik.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Katalog Koleksi -->
+  <main class="section" id="katalog">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title serif-jp">Katalog Pustaka &amp; Arsip</h2>
+          <p class="section-sub">Klik sampul atau tombol baca untuk membuka detail, glosarium Kanji, dan cuplikan teks.</p>
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <div class="category-pills" id="categoryBar"></div>
+
+        <div class="right-controls">
+          <button class="btn fav-toggle" id="favFilterBtn">
+            ★ Rak Favorit (<span id="favBadgeCount">0</span>)
+          </button>
+          <select class="select-control" id="sortSelect" aria-label="Urutkan koleksi">
+            <option value="default">Urutan: Rekomendasi</option>
+            <option value="title-asc">Judul: A – Z</option>
+            <option value="year-desc">Tahun: Terbaru</option>
+            <option value="year-asc">Tahun: Terlama</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="catalog-grid" id="collectionsGrid"></div>
+
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="kanji-empty serif-jp">空</div>
+        <h3>Koleksi tidak ditemukan</h3>
+        <p style="color: var(--ink-muted); margin: 6px 0 16px;">Coba kata kunci lain atau tampilkan semua kategori.</p>
+        <button class="btn btn-primary" id="resetFiltersBtn">Tampilkan Semua Koleksi</button>
+      </div>
+
+      <!-- Kelola & Backup Data -->
+      <div class="library-tools" id="kelola">
+        <div class="library-tools-info">
+          <h4>Kelola Arsip Zamr Library</h4>
+          <p>Semua koleksi tambahan &amp; rak favorit tersimpan otomatis di browser Anda. Anda bisa ekspor/impor file JSON kapan saja.</p>
+        </div>
+        <div class="library-tools-actions">
+          <button class="btn" id="exportJsonBtn">⬇ Ekspor JSON</button>
+          <label class="btn" style="cursor:pointer;">
+            ⬆ Impor JSON
+            <input type="file" id="importJsonInput" accept=".json" hidden />
+          </label>
+          <button class="btn btn-soft" id="resetDataBtn">↺ Reset Awal</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Ensiklopedia Mini Budaya Jepang -->
+  <section class="section culture-section" id="budaya">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title serif-jp">Ensiklopedia Mini Budaya Jepang</h2>
+          <p class="section-sub">Referensi ringkas estetika, etiket sehari-hari, dan perayaan tradisional di Jepang.</p>
+        </div>
+      </div>
+
+      <div class="culture-tabs" id="cultureTabs"></div>
+      <div class="culture-grid" id="cultureContent"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="proverb serif-jp">一期一会 — <em>Ichi-go ichi-e</em></p>
+      <p>Zamr Library • Perpustakaan Digital Koleksi &amp; Budaya Jepang • Siap Deploy di Vercel</p>
+    </div>
+  </footer>
+
+  <!-- Modal Reader & Detail -->
+  <div class="modal-backdrop" id="readerModal" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <strong id="readerModalCategory" style="color: var(--accent); font-size: 0.85rem;">Detail Koleksi</strong>
+        <button class="btn btn-soft" id="closeReaderBtn" style="padding: 6px 12px;">✕ Tutup</button>
+      </div>
+      <div class="modal-body" id="readerBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Koleksi -->
+  <div class="modal-backdrop" id="addModal" role="dialog" aria-modal="true">
+    <div class="modal-dialog" style="max-width: 620px;">
+      <div class="modal-header">
+        <strong>Tambah Koleksi Baru ke Zamr Library</strong>
+        <button class="btn btn-soft" id="closeAddModalBtn" style="padding: 6px 12px;">✕ Tutup</button>
+      </div>
+      <div class="modal-body">
+        <form id="addCollectionForm" class="form-grid">
+          <div class="form-group">
+            <label for="inputTitle">Judul Koleksi *</label>
+            <input type="text" id="inputTitle" required placeholder="Misal: Botchan / Sejarah Kyoto" />
+          </div>
+          <div class="form-group">
+            <label for="inputJpTitle">Judul Jepang / Kanji</label>
+            <input type="text" id="inputJpTitle" placeholder="Misal: 坊っちゃん" />
+          </div>
+          <div class="form-group">
+            <label for="inputAuthor">Penulis / Kurator *</label>
+            <input type="text" id="inputAuthor" required placeholder="Misal: Natsume Sōseki" />
+          </div>
+          <div class="form-group">
+            <label for="inputYear">Tahun Terbit / Periode</label>
+            <input type="number" id="inputYear" value="2024" min="500" max="2100" />
+          </div>
+          <div class="form-group">
+            <label for="inputCategory">Kategori *</label>
+            <select id="inputCategory">
+              <option value="Sastra & Novel">Sastra & Novel</option>
+              <option value="Manga & Visual">Manga & Visual</option>
+              <option value="Budaya & Filsafat">Budaya & Filsafat</option>
+              <option value="Folklore & Mitologi">Folklore & Mitologi</option>
+              <option value="Bahasa & Aksara">Bahasa & Aksara</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputFormat">Format / Jenis</label>
+            <input type="text" id="inputFormat" value="E-Book / Arsip" placeholder="Misal: PDF, Manga, Esai" />
+          </div>
+          <div class="form-group full">
+            <label for="inputTags">Tag (pisahkan dengan koma)</label>
+            <input type="text" id="inputTags" placeholder="Misal: Klasik, Meiji, Edo, Kanji" />
+          </div>
+          <div class="form-group full">
+            <label for="inputSummary">Ringkasan / Sinopsis *</label>
+            <textarea id="inputSummary" rows="3" required placeholder="Tuliskan deskripsi singkat koleksi ini..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="inputExcerpt">Cuplikan Bacaan / Catatan Penting</label>
+            <textarea id="inputExcerpt" rows="3" placeholder="Paragraf pembuka, kutipan, atau catatan pribadi..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="inputUrl">Tautan Eksternal Opsional (PDF / Google Drive / Arsip)</label>
+            <input type="url" id="inputUrl" placeholder="https://..." />
+          </div>
+          <div class="form-group full" style="flex-direction: row; justify-content: flex-end; margin-top: 6px;">
+            <button type="submit" class="btn btn-primary">Simpan ke Perpustakaan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl">Tersimpan!</div>
+
+  <script>
+    // ==========================================
+    // DATA AWAL ZAMR LIBRARY (KOLEKSI & BUDAYA)
+    // ==========================================
+    const DEFAULT_COLLECTIONS = [
+      {
+        id: "kokoro-soseki",
+        title: "Kokoro (Hati Nurani)",
+        jpTitle: "こころ",
+        romaji: "Kokoro",
+        author: "Natsume Sōseki",
+        year: 1914,
+        category: "Sastra & Novel",
+        format: "Novel Klasik",
+        motif: "moon",
+        color: "#b83b3b",
+        tags: ["Era Meiji", "Psikologi", "Klasik"],
+        summary: "Mahakarya sastra modern Jepang yang mengisahkan hubungan batin antara seorang mahasiswa muda dan sosok misterius bernama 'Sensei' di tengah transisi zaman Meiji menuju modernitas.",
+        culturalNote: "Menggambarkan konsep 'Kokoro' (hati, pikiran, jiwa) serta pergulatan nilai tradisional kesetiaan versus individualisme modern di awal abad ke-20.",
+        excerpt: "Aku selalu memanggilnya Sensei. Di sini pun aku akan menuliskannya sebagai Sensei, tanpa menyebut nama aslinya. Bukan karena pertimbangan sopan santun, melainkan karena bagiku sebutan itu terasa paling wajar setiap kali mengenang dirinya.",
+        glossary: [
+          { jp: "心 (こころ)", reading: "Kokoro", meaning: "Hati, jiwa, perasaan batin" },
+          { jp: "先生", reading: "Sensei", meaning: "Guru / sosok yang dihormati" },
+          { jp: "明治", reading: "Meiji", meaning: "Era modernisasi Jepang (1868–1912)" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "ningen-shikkaku",
+        title: "Ningen Shikkaku (Gagal Menjadi Manusia)",
+        jpTitle: "人間失格",
+        romaji: "Ningen Shikkaku",
+        author: "Osamu Dazai",
+        year: 1948,
+        category: "Sastra & Novel",
+        format: "Novel Klasik",
+        motif: "enso",
+        color: "#334155",
+        tags: ["Pascaperang", "Eksistensial", "Bungaku"],
+        summary: "Catatan hidup Ōba Yōzō yang merasa terasing dari masyarakat manusia dan bersembunyi di balik topeng badut untuk menutupi kegelisahan batinnya.",
+        culturalNote: "Salah satu karya 'Watakushi Shōsetsu' (I-Novel) paling terkenal di Jepang yang mencerminkan krisis identitas masyarakat Jepang pasca Perang Dunia II.",
+        excerpt: "Aku telah menjalani hidup yang penuh rasa malu. Aku bahkan tidak sanggup membayangkan bagaimana sebenarnya kehidupan seorang manusia biasa itu dijalani.",
+        glossary: [
+          { jp: "人間失格", reading: "Ningen Shikkaku", meaning: "Tidak layak / gagal menjadi manusia" },
+          { jp: "私小説", reading: "Watakushi Shōsetsu", meaning: "Genre fiksi pengakuan diri khas Jepang" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "inei-raisan",
+        title: "Pujian untuk Bayangan (In'ei Raisan)",
+        jpTitle: "陰翳礼讃",
+        romaji: "In'ei Raisan",
+        author: "Jun'ichirō Tanizaki",
+        year: 1933,
+        category: "Budaya & Filsafat",
+        format: "Esai Estetika",
+        motif: "bamboo",
+        color: "#3f6254",
+        tags: ["Arsitektur", "Estetika", "Washi"],
+        summary: "Esai ikonik tentang bagaimana keindahan budaya tradisional Jepang justru lahir dari keremangan, bayangan lembut ruangan tatami, pernis hitam, dan cahaya kertas shōji.",
+        culturalNote: "Menjadi rujukan utama bagi arsitek dan desainer untuk memahami perbedaan filosofi pencahayaan Barat yang serba terang dan estetika bayangan tradisional Jepang.",
+        excerpt: "Keindahan sejati tidak terletak pada benda itu sendiri, melainkan pada pola bayangan, keremangan, dan cahaya redup yang tercipta di antara satu benda dengan benda lainnya.",
+        glossary: [
+          { jp: "陰翳", reading: "In'ei", meaning: "Bayangan / keremangan lembut" },
+          { jp: "障子", reading: "Shōji", meaning: "Pintu geser berlapis kertas tembus cahaya" },
+          { jp: "畳", reading: "Tatami", meaning: "Anyaman jerami alas lantai tradisional" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "cha-no-hon",
+        title: "The Book of Tea (Cha no Hon)",
+        jpTitle: "茶の本",
+        romaji: "Cha no Hon",
+        author: "Okakura Kakuzō",
+        year: 1906,
+        category: "Budaya & Filsafat",
+        format: "Buku Filsafat",
+        motif: "torii",
+        color: "#4d7c5b",
+        tags: ["Chadō", "Zen", "Upacara Teh"],
+        summary: "Karya klasik yang memperkenalkan filosofi upacara minum teh Jepang (Chadō) kepada dunia, memadukan ajaran Zen, Taoisme, seni merangkai bunga, dan keharmonisan hidup.",
+        culturalNote: "Upacara teh bukan sekadar menyeduh matcha, melainkan latihan ketenangan (Wa, Kei, Sei, Jaku: harmoni, hormat, kemurnian, ketenteraman).",
+        excerpt: "Teaisme adalah pemujaan terhadap keindahan di tengah fakta-fakta kehidupan sehari-hari yang sederhana. Ia mengajarkan kita tentang kemurnian, keharmonisan, dan romansa tata tertib sosial.",
+        glossary: [
+          { jp: "茶道", reading: "Chadō / Sadō", meaning: "Jalan teh / upacara teh Jepang" },
+          { jp: "和敬清寂", reading: "Wa Kei Sei Jaku", meaning: "Empat prinsip utama upacara teh" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "vagabond-inoue",
+        title: "Vagabond — Jalan Pedang Musashi",
+        jpTitle: "バガボンド",
+        romaji: "Bagabondo",
+        author: "Takehiko Inoue",
+        year: 1998,
+        category: "Manga & Visual",
+        format: "Manga Sejarah",
+        motif: "fuji",
+        color: "#8f3929",
+        tags: ["Samurai", "Miyamoto Musashi", "Seinen"],
+        summary: "Adaptasi visual memukau dari kisah hidup pendekar pedang legendaris Miyamoto Musashi dalam pencariannya memahami makna sejati menjadi 'tak terkalahkan di bawah langit'.",
+        culturalNote: "Dikenal karena teknik ilustrasi kuas tinta (sumi-e) dan refleksi mendalam mengenai jalan samurai (Bushidō), pengendalian ego, serta kehidupan petani Edo.",
+        excerpt: "Berfokus pada kekuatan semata hanya akan mengundang kehampaan. Ketika pedang diletakkan, barulah seseorang mulai melihat luasnya langit dan bumi di sekelilingnya.",
+        glossary: [
+          { jp: "剣術", reading: "Kenjutsu", meaning: "Seni ilmu pedang tradisional Jepang" },
+          { jp: "浪人", reading: "Rōnin", meaning: "Samurai tanpa tuan" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "mushishi",
+        title: "Mushishi — Penjelajah Kehidupan Gaib",
+        jpTitle: "蟲師",
+        romaji: "Mushishi",
+        author: "Yuki Urushibara",
+        year: 1999,
+        category: "Manga & Visual",
+        format: "Manga Fantasi",
+        motif: "bamboo",
+        color: "#2f6b64",
+        tags: ["Alam", "Animisme", "Iyashikei"],
+        summary: "Mengikuti perjalanan Ginko, seorang pengembara yang mempelajari makhluk primordial bernama 'Mushi' serta membantu manusia hidup berdampingan dengan fenomena alam yang tak kasatmata.",
+        culturalNote: "Mewakili kepekaan Shintō terhadap roh alam (kami) dan genre 'Iyashikei' — cerita bernuansa tenang, meditatif, dan menyembuhkan.",
+        excerpt: "Mushi bukanlah makhluk jahat maupun baik. Mereka hanya sekadar ada, mengalir sebagaimana angin pegunungan dan kabut pagi.",
+        glossary: [
+          { jp: "癒やし系", reading: "Iyashikei", meaning: "Genre karya yang menenangkan jiwa" },
+          { jp: "自然", reading: "Shizen", meaning: "Alam semesta" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "kwaidan-hearn",
+        title: "Kwaidan: Kisah & Studi Hal Aneh Jepang",
+        jpTitle: "怪談",
+        romaji: "Kwaidan",
+        author: "Lafcadio Hearn (Koizumi Yakumo)",
+        year: 1904,
+        category: "Folklore & Mitologi",
+        format: "Antologi Folklore",
+        motif: "wave",
+        color: "#4b3f72",
+        tags: ["Yōkai", "Mitologi", "Cerita Rakyat"],
+        summary: "Kumpulan cerita rakyat supranatural Jepang seperti Yuki-onna (Wanita Salju), Hoichi si Tanpa Telinga, dan Rokurokubi yang dikumpulkan pada akhir abad ke-19.",
+        culturalNote: "Folklore Yōkai mengajarkan kewaspadaan manusia terhadap alam, penghormatan pada leluhur, dan konsekuensi moral dalam masyarakat tradisional.",
+        excerpt: "Di tengah badai salju yang membekukan lembah Musashi, sesosok bayangan putih melangkah tanpa meninggalkan satu pun jejak kaki di atas salju.",
+        glossary: [
+          { jp: "妖怪", reading: "Yōkai", meaning: "Makhluk supernatural dalam folklore Jepang" },
+          { jp: "雪女", reading: "Yuki-onna", meaning: "Roh wanita salju" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "makura-no-soshi",
+        title: "Makura no Sōshi (Buku Bantal)",
+        jpTitle: "枕草子",
+        romaji: "Makura no Sōshi",
+        author: "Sei Shōnagon",
+        year: 1002,
+        category: "Sastra & Novel",
+        format: "Catatan Heian",
+        motif: "sakura",
+        color: "#b94e6f",
+        tags: ["Zaman Heian", "Istana Kyoto", "Zuihitsu"],
+        summary: "Kumpulan pengamatan puitis, daftar hal-hal indah, serta kisah kehidupan bangsawan istana Kyoto lebih dari seribu tahun lalu.",
+        culturalNote: "Melahirkan tradisi sastra 'Zuihitsu' (tulisan mengikuti aliran kuas) serta memperkenalkan daftar musim paling ikonik dalam literatur Jepang.",
+        excerpt: "Di musim semi, fajar adalah saat yang paling indah — ketika puncak gunung perlahan memutih dan untaian awan ungu tipis melayang lembut di langit.",
+        glossary: [
+          { jp: "随筆", reading: "Zuihitsu", meaning: "Esai bebas mengikuti aliran pikiran" },
+          { jp: "平安時代", reading: "Heian Jidai", meaning: "Zaman keemasan seni istana Kyoto (794–1185)" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "ukiyoe-edo",
+        title: "Ukiyo-e: Dunia Mengambang Seni Cetak Edo",
+        jpTitle: "浮世絵",
+        romaji: "Ukiyo-e",
+        author: "Arsip Budaya Zamr",
+        year: 1831,
+        category: "Budaya & Filsafat",
+        format: "Arsip Seni",
+        motif: "wave",
+        color: "#1f5a7a",
+        tags: ["Hokusai", "Hiroshige", "Zaman Edo"],
+        summary: "Dokumentasi seni cetak balok kayu (mokuhanga) dari era Edo seperti 'Ombak Besar di Lepas Pantai Kanagawa' karya Hokusai dan seri 53 Stasiun Tōkaidō oleh Hiroshige.",
+        culturalNote: "Ukiyo-e menginspirasi gerakan Impresionisme di Eropa (Japonisme) dan tetap menjadi fondasi estetika visual manga modern.",
+        excerpt: "Melalui gradasi tinta indigo (Prussian Blue) di atas lembaran kertas mulberi, para pengrajin Edo membekukan kemegahan Gunung Fuji dan kesibukan kota tua.",
+        glossary: [
+          { jp: "浮世絵", reading: "Ukiyo-e", meaning: "Lukisan dunia yang mengambang / fana" },
+          { jp: "木版画", reading: "Mokuhanga", meaning: "Seni cetak cukil kayu Jepang" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "rashomon-akutagawa",
+        title: "Rashōmon & Cerita Pendek Pilihan",
+        jpTitle: "羅生門",
+        romaji: "Rashōmon",
+        author: "Ryūnosuke Akutagawa",
+        year: 1915,
+        category: "Sastra & Novel",
+        format: "Antologi Cerpen",
+        motif: "torii",
+        color: "#7c3f2c",
+        tags: ["Era Taishō", "Moralitas", "Cerpen"],
+        summary: "Kisah pelayan yang bimbang antara mati kelaparan atau mencuri demi bertahan hidup di bawah gerbang kota Kyoto yang runtuh dan diguyur hujan.",
+        culturalNote: "Nama Akutagawa diabadikan menjadi Akutagawa Prize, penghargaan sastra paling bergengsi di Jepang hingga hari ini.",
+        excerpt: "Pada suatu senja, seorang pelayan berdiri berteduh di bawah gerbang Rashōmon, menunggu hujan berhenti sementara suara gagak memecah kesunyian kota tua.",
+        glossary: [
+          { jp: "大正", reading: "Taishō", meaning: "Era budaya modern awal (1912–1926)" },
+          { jp: "門", reading: "Mon", meaning: "Gerbang" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "kojiki-mitologi",
+        title: "Kojiki — Catatan Hal-Hal Purba",
+        jpTitle: "古事記",
+        romaji: "Kojiki",
+        author: "Ō no Yasumaro (Kompilasi)",
+        year: 712,
+        category: "Folklore & Mitologi",
+        format: "Teks Sejarah & Mitos",
+        motif: "fuji",
+        color: "#9a6b2f",
+        tags: ["Shintō", "Amaterasu", "Asal-usul"],
+        summary: "Kronik tertulis tertua di Jepang yang merekam kisah penciptaan kepulauan Jepang oleh Izanagi dan Izanami serta legenda Dewi Matahari Amaterasu.",
+        culturalNote: "Menjadi sumber utama pemahaman tradisi kuil Shintō (Jinja), ritual pemurnian (Harai), dan perayaan awal tahun di Jepang.",
+        excerpt: "Ketika langit dan bumi baru mulai terpisah, lahirlah dewa-dewa di Takamagahara, Dataran Tinggi Surga, sebelum turun membentuk kepulauan delapan pulau.",
+        glossary: [
+          { jp: "神道", reading: "Shintō", meaning: "Jalan para dewa / kepercayaan asli Jepang" },
+          { jp: "神社", reading: "Jinja", meaning: "Kuil Shintō" }
+        ],
+        externalUrl: ""
+      },
+      {
+        id: "panduan-kanji-keigo",
+        title: "Pustaka Aksara: Jōyō Kanji & Etiket Keigo",
+        jpTitle: "日本語・漢字と敬語",
+        romaji: "Nihongo: Kanji to Keigo",
+        author: "Tim Kurasi Zamr",
+        year: 2025,
+        category: "Bahasa & Aksara",
+        format: "Modul Bahasa",
+        motif: "sakura",
+        color: "#b83b3b",
+        tags: ["JLPT", "Kanji", "Keigo"],
+        summary: "Panduan praktis memahami sistem tiga aksara Jepang (Hiragana, Katakana, Kanji), cara membaca Onyomi & Kunyomi, serta penggunaan ragam bahasa sopan Keigo.",
+        culturalNote: "Memahami Keigo (Sonkeigo, Kenjōgo, Teineigo) adalah kunci memahami hierarki sosial, rasa hormat, dan kehalusan komunikasi masyarakat Jepang.",
+        excerpt: "Satu huruf Kanji umumnya memiliki dua cara baca utama: On'yomi (serapan bunyi Tionghoa kuno) saat digabung dengan kanji lain, serta Kun'yomi (bunyi asli Jepang) saat berdiri sendiri.",
+        glossary: [
+          { jp: "常用漢字", reading: "Jōyō Kanji", meaning: "2.136 Kanji standar resmi Jepang" },
+          { jp: "敬語", reading: "Keigo", meaning: "Bahasa hormat dalam bahasa Jepang" },
+          { jp: "五十音", reading: "Gojūon", meaning: "Susunan tabel bunyi Hiragana/Katakana" }
+        ],
+        externalUrl: ""
+      }
+    ];
+
+    // Sorotan Filosofi Budaya
+    const SPOTLIGHTS = [
+      {
+        jp: "侘寂",
+        romaji: "Wabi-sabi",
+        title: "Keindahan dalam Ketidaksempurnaan",
+        desc: "Konsep estetika Jepang yang menghargai kesederhanaan, ketenangan, penuaan alami, dan hal-hal yang tidak sempurna namun autentik."
+      },
+      {
+        jp: "金継ぎ",
+        romaji: "Kintsugi",
+        title: "Menyambung Retakan dengan Emas",
+        desc: "Seni tradisional memperbaiki keramik pecah menggunakan pernis berlapis emas—mengajarkan bahwa luka dan sejarah adalah bagian dari keindahan."
+      },
+      {
+        jp: "物の哀れ",
+        romaji: "Mono no aware",
+        title: "Kepekaan terhadap Kefanaan",
+        desc: "Rasa haru yang lembut saat menyadari bahwa segala hal di dunia bersifat sementara, seperti indahnya bunga sakura yang mekar singkat lalu gugur."
+      },
+      {
+        jp: "一期一会",
+        romaji: "Ichi-go ichi-e",
+        title: "Satu Waktu, Satu Pertemuan",
+        desc: "Ungkapan dari dunia upacara teh yang mengingatkan agar selalu menghargai setiap pertemuan karena momen yang sama takkan terulang dua kali."
+      },
+      {
+        jp: "おもてなし",
+        romaji: "Omotenashi",
+        title: "Keramahtamahan Tanpa Pamrih",
+        desc: "Seni melayani dan menyambut tamu dengan sepenuh hati, memperhatikan detail kecil kebutuhan orang lain sebelum diminta."
+      }
+    ];
+
+    // Data Ensiklopedia Budaya Jepang
+    const CULTURE_ENCYCLOPEDIA = {
+      "Estetika & Jiwa": [
+        { jp: "幽玄 (Yūgen)", title: "Keindahan yang Misterius & Mendalam", text: "Keanggunan halus yang tak sepenuhnya tersampaikan lewat kata-kata—seperti melihat bulan yang tertutup kabut tipis." },
+        { jp: "渋い (Shibui)", title: "Kesan Bersahaja namun Berkelas", text: "Estetika kesederhanaan yang tidak mencolok, warna kalem, dan tekstur alami yang semakin terasa indah seiring waktu." },
+        { jp: "生き甲斐 (Ikigai)", title: "Alasan untuk Bangun di Pagi Hari", text: "Titik temu antara apa yang Anda cintai, kuasai, dibutuhkan masyarakat, dan bernilai bagi kehidupan." }
+      ],
+      "Etiket & Sehari-hari": [
+        { jp: "お辞儀 (Ojigi)", title: "Seni Membungkuk", text: "Bentuk penghormatan, salam, maupun permohonan maaf. Sudut membungkuk (15°, 30°, 45°) menyesuaikan tingkat formalitas situasi." },
+        { jp: "玄関 (Genkan)", title: "Batas Luar & Dalam Rumah", text: "Area pintu masuk tempat melepas sepatu sebelum melangkah ke lantai dalam atau tatami demi menjaga kesucian dan kebersihan ruang." },
+        { jp: "お土産 (Omiyage)", title: "Tradisi Oleh-Oleh Lokal", text: "Membawa kudapan khas daerah saat bepergian untuk dibagikan kepada keluarga atau rekan kerja sebagai wujud kepedulian." }
+      ],
+      "Matsuri & Musim": [
+        { jp: "花見 (Hanami)", title: "Menikmati Sakura di Musim Semi", text: "Tradisi piknik di bawah pohon sakura yang mekar antara akhir Maret hingga April sebagai simbol awal baru kehidupan." },
+        { jp: "夏祭り (Natsu Matsuri)", title: "Festival Musim Panas", text: "Meriah dengan yukata, tabuhan taiko, lampion kertas (chōchin), jajanan takoyaki, serta pertunjukan kembang api (hanabi)." },
+        { jp: "紅葉狩り (Momijigari)", title: "Berburu Warna Musim Gugur", text: "Perjalanan menikmati berubahnya daun maple (momiji) menjadi merah menyala dan ginkgo menjadi kuning keemasan di bulan November." }
+      ]
+    };
+
+    const STORAGE_DATA_KEY = "zamr_library_collections_v1";
+    const STORAGE_FAVS_KEY = "zamr_library_favorites_v1";
+    const STORAGE_THEME_KEY = "zamr_library_theme_v1";
+
+    // State Aplikasi
+    let collections = loadCollections();
+    let favorites = loadFavorites();
+    let activeCategory = "Semua";
+    let searchQuery = "";
+    let showFavsOnly = false;
+    let sortMode = "default";
+    let spotlightIdx = 0;
+    let activeCultureTab = Object.keys(CULTURE_ENCYCLOPEDIA)[0];
+    let readerFontSize = 16;
+
+    // Helpers Keamanan & Storage
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function loadCollections() {
+      try {
+        const raw = localStorage.getItem(STORAGE_DATA_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return structuredClone(DEFAULT_COLLECTIONS);
+    }
+
+    function saveCollections() {
+      localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(collections));
+    }
+
+    function loadFavorites() {
+      try {
+        const raw = localStorage.getItem(STORAGE_FAVS_KEY);
+        return raw ? JSON.parse(raw) : ["kokoro-soseki", "inei-raisan"];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveFavorites() {
+      localStorage.setItem(STORAGE_FAVS_KEY, JSON.stringify(favorites));
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toastEl");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    // Generator Ilustrasi Sampul SVG Khas Jepang
+    function generateCoverSvg(item) {
+      const base = item.color || "#b83b3b";
+      const motif = item.motif || "torii";
+      let art = "";
+
+      if (motif === "torii") {
+        art = `
+          <circle cx="230" cy="70" r="38" fill="#fff" fill-opacity="0.16" />
+          <path d="M90 65 H230 M98 85 H222 M122 65 V155 M198 65 V155 M160 65 V85" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.88"/>
+        `;
+      } else if (motif === "fuji") {
+        art = `
+          <circle cx="238" cy="52" r="24" fill="#fde68a" fill-opacity="0.75" />
+          <path d="M35 165 L138 64 L182 64 L285 165 Z" fill="#fff" fill-opacity="0.18"/>
+          <path d="M138 64 L182 64 L204 95 L182 88 L160 100 L138 87 L118 96 Z" fill="#fff" fill-opacity="0.75"/>
+        `;
+      } else if (motif === "wave") {
+        art = `
+          <path d="M0 120 Q55 75 110 120 T220 120 T330 120 V180 H0 Z" fill="#fff" fill-opacity="0.14"/>
+          <path d="M-10 142 Q50 96 115 142 T240 142 T340 142 V180 H-10 Z" fill="#fff" fill-opacity="0.22"/>
+          <circle cx="245" cy="56" r="22" fill="#fff" fill-opacity="0.22"/>
+        `;
+      } else if (motif === "sakura") {
+        art = `
+          <circle cx="90" cy="60" r="46" fill="#fff" fill-opacity="0.12"/>
+          <g fill="#fff" fill-opacity="0.75">
+            <circle cx="190" cy="65" r="8"/><circle cx="204" cy="76" r="8"/>
+            <circle cx="198" cy="92" r="8"/><circle cx="182" cy="92" r="8"/>
+            <circle cx="176" cy="76" r="8"/>
+            <circle cx="120" cy="122" r="5"/><circle cx="248" cy="118" r="4"/>
+          </g>
+        `;
+      } else if (motif === "bamboo") {
+        art = `
+          <g stroke="#fff" stroke-width="6" stroke-opacity="0.45">
+            <line x1="88" y1="15" x2="88" y2="170"/>
+            <line x1="126" y1="5" x2="126" y2="175"/>
+            <line x1="226" y1="25" x2="226" y2="175"/>
+          </g>
+          <path d="M126 70 Q158 55 170 72 Q145 80 126 70 Z" fill="#fff" fill-opacity="0.6"/>
+          <path d="M88 100 Q54 88 45 106 Q72 110 88 100 Z" fill="#fff" fill-opacity="0.5"/>
+        `;
+      } else {
+        art = `
+          <circle cx="160" cy="88" r="48" stroke="#fff" stroke-width="8" stroke-opacity="0.5" fill="none" stroke-dasharray="255 45"/>
+          <circle cx="236" cy="48" r="14" fill="#fff" fill-opacity="0.25"/>
+        `;
+      }
+
+      return `
+        <svg viewBox="0 0 320 175" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="g-${escapeHtml(item.id)}" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="${escapeHtml(base)}" />
+              <stop offset="100%" stop-color="#1e1b18" />
+            </linearGradient>
+          </defs>
+          <rect width="320" height="175" fill="url(#g-${escapeHtml(item.id)})" />
+          ${art}
+        </svg>
+      `;
+    }
+
+    // Tema Washi / Yoru
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem(STORAGE_THEME_KEY, theme);
+      const isDark = theme === "yoru";
+      document.getElementById("themeIcon").textContent = isDark ? "☀️" : "🌙";
+      document.getElementById("themeLabel").textContent = isDark ? "Washi" : "Yoru";
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem(STORAGE_THEME_KEY) || "washi";
+      applyTheme(saved);
+    }
+
+    // Render Kategori
+    function renderCategories() {
+      const cats = ["Semua", ...new Set(collections.map((c) => c.category))];
+      const bar = document.getElementById("categoryBar");
+      bar.innerHTML = cats
+        .map(
+          (cat) => `
+          <button class="pill ${cat === activeCategory ? "active" : ""}" data-cat="${escapeHtml(cat)}">
+            ${escapeHtml(cat)}
+          </button>`
+        )
+        .join("");
+
+      bar.querySelectorAll(".pill").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeCategory = btn.getAttribute("data-cat");
+          renderCategories();
+          renderCatalog();
+        });
+      });
+
+      document.getElementById("catCountStat").textContent = Math.max(cats.length - 1, 1);
+    }
+
+    // Filter & Render Katalog
+    function getFilteredCollections() {
+      const q = searchQuery.trim().toLowerCase();
+      let list = collections.filter((item) => {
+        const matchCat = activeCategory === "Semua" || item.category === activeCategory;
+        const matchFav = !showFavsOnly || favorites.includes(item.id);
+        const searchable = [
+          item.title,
+          item.jpTitle,
+          item.romaji,
+          item.author,
+          item.category,
+          item.summary,
+          ...(item.tags || [])
+        ]
+          .join(" ")
+          .toLowerCase();
+        const matchSearch = !q || searchable.includes(q);
+        return matchCat && matchFav && matchSearch;
+      });
+
+      if (sortMode === "title-asc") {
+        list.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sortMode === "year-desc") {
+        list.sort((a, b) => (b.year || 0) - (a.year || 0));
+      } else if (sortMode === "year-asc") {
+        list.sort((a, b) => (a.year || 0) - (b.year || 0));
+      }
+      return list;
+    }
+
+    function updateStats() {
+      document.getElementById("totalCountStat").textContent = collections.length;
+      const validFavCount = favorites.filter((id) => collections.some((c) => c.id === id)).length;
+      document.getElementById("favCountStat").textContent = validFavCount;
+      document.getElementById("favBadgeCount").textContent = validFavCount;
+    }
+
+    function renderCatalog() {
+      updateStats();
+      const grid = document.getElementById("collectionsGrid");
+      const empty = document.getElementById("emptyState");
+      const items = getFilteredCollections();
+
+      if (items.length === 0) {
+        grid.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+
+      empty.style.display = "none";
+      grid.innerHTML = items
+        .map((item) => {
+          const isSaved = favorites.includes(item.id);
+          const tagsHtml = (item.tags || [])
+            .slice(0, 3)
+            .map((t) => `<span class="tag">#${escapeHtml(t)}</span>`)
+            .join("");
+
+          return `
+            <article class="book-card">
+              <div class="book-cover" data-open-id="${escapeHtml(item.id)}">
+                ${generateCoverSvg(item)}
+                <span class="cover-overlay-badge">${escapeHtml(item.format || "Arsip")}</span>
+                ${item.jpTitle ? `<span class="cover-jp-stamp">${escapeHtml(item.jpTitle)}</span>` : ""}
+              </div>
+              <div class="book-body">
+                <div class="book-meta">
+                  <span>${escapeHtml(item.category)}</span>
+                  <span>${escapeHtml(item.year || "-")}</span>
+                </div>
+                <h3 class="book-title serif-jp" data-open-id="${escapeHtml(item.id)}">${escapeHtml(item.title)}</h3>
+                <div class="book-author">${escapeHtml(item.author)}</div>
+                <p class="book-summary">${escapeHtml(item.summary)}</p>
+                <div class="tag-row">${tagsHtml}</div>
+                <div class="book-actions">
+                  <button class="btn btn-primary" data-open-id="${escapeHtml(item.id)}">📖 Baca &amp; Detail</button>
+                  <button class="btn btn-icon ${isSaved ? "saved" : ""}" data-fav-id="${escapeHtml(item.id)}" title="${isSaved ? "Hapus dari favorit" : "Simpan ke rak favorit"}">
+                    ${isSaved ? "★" : "☆"}
+                  </button>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      grid.querySelectorAll("[data-open-id]").forEach((el) => {
+        el.addEventListener("click", () => openReaderModal(el.getAttribute("data-open-id")));
+      });
+
+      grid.querySelectorAll("[data-fav-id]").forEach((el) => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleFavorite(el.getAttribute("data-fav-id"));
+        });
+      });
+    }
+
+    function toggleFavorite(id) {
+      if (favorites.includes(id)) {
+        favorites = favorites.filter((fid) => fid !== id);
+        showToast("Dihapus dari Rak Favorit");
+      } else {
+        favorites.push(id);
+        showToast("Disimpan ke Rak Favorit ★");
+      }
+      saveFavorites();
+      renderCatalog();
+    }
+
+    // Modal Reader & Detail
+    function openReaderModal(id) {
+      const item = collections.find((c) => c.id === id);
+      if (!item) return;
+
+      const isSaved = favorites.includes(item.id);
+      document.getElementById("readerModalCategory").textContent = `${item.category} • ${item.format || "Arsip"}`;
+
+      const glossaryHtml =
+        item.glossary && item.glossary.length > 0
+          ? `
+          <div style="margin-top: 20px;">
+            <h4 style="font-size: 0.95rem;">Glosarium Istilah &amp; Kanji</h4>
+            <div class="glossary-list">
+              ${item.glossary
+                .map(
+                  (g) => `
+                  <div class="glossary-item">
+                    <strong>${escapeHtml(g.jp)}</strong>
+                    <small>${escapeHtml(g.reading)}</small>
+                    <span style="font-size: 0.82rem; color: var(--ink-muted);">${escapeHtml(g.meaning)}</span>
+                  </div>
+                `
+                )
+                .join("")}
+            </div>
+          </div>
+        `
+          : "";
+
+      const externalBtn = item.externalUrl
+        ? `<a class="btn btn-primary" href="${escapeHtml(item.externalUrl)}" target="_blank" rel="noopener noreferrer">↗ Buka Sumber / PDF</a>`
+        : "";
+
+      document.getElementById("readerBody").innerHTML = `
+        <div class="reader-banner">
+          <div class="reader-thumb">${generateCoverSvg(item)}</div>
+          <div style="flex: 1; min-width: 220px;">
+            ${item.jpTitle ? `<div class="serif-jp" style="color: var(--accent); font-size: 1.15rem; margin-bottom: 4px;">${escapeHtml(item.jpTitle)} ${item.romaji ? `(${escapeHtml(item.romaji)})` : ""}</div>` : ""}
+            <h2 class="serif-jp" style="font-size: 1.55rem; line-height: 1.25; margin-bottom: 6px;">${escapeHtml(item.title)}</h2>
+            <p style="color: var(--ink-muted); font-size: 0.92rem; margin-bottom: 12px;">
+              <strong>${escapeHtml(item.author)}</strong> • Tahun ${escapeHtml(item.year || "-")}
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button class="btn ${isSaved ? "saved" : ""}" id="modalFavBtn">${isSaved ? "★ Tersimpan di Rak" : "☆ Simpan ke Rak"}</button>
+              ${externalBtn}
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size: 0.95rem; margin-bottom: 6px;">Ringkasan</h4>
+        <p style="color: var(--ink-muted); font-size: 0.94rem; margin-bottom: 14px;">${escapeHtml(item.summary)}</p>
+
+        ${
+          item.culturalNote
+            ? `
+          <div style="padding: 12px 15px; border-radius: 10px; background: var(--secondary-soft); margin-bottom: 16px;">
+            <strong style="color: var(--secondary); font-size: 0.84rem; display: block; margin-bottom: 3px;">⛩️ Konteks Budaya Jepang</strong>
+            <span style="font-size: 0.88rem;">${escapeHtml(item.culturalNote)}</span>
+          </div>
+        `
+            : ""
+        }
+
+        ${
+          item.excerpt
+            ? `
+          <div class="reader-controls">
+            <span><strong>Mode Cuplikan Bacaan</strong></span>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-soft" id="fontSmallerBtn" style="padding: 3px 9px;">A-</button>
+              <button class="btn btn-soft" id="fontLargerBtn" style="padding: 3px 9px;">A+</button>
+            </div>
+          </div>
+          <div class="reader-excerpt-box" id="readerExcerptText" style="font-size: ${readerFontSize}px;">
+            “${escapeHtml(item.excerpt)}”
+          </div>
+        `
+            : ""
+        }
+
+        ${glossaryHtml}
+      `;
+
+      document.getElementById("modalFavBtn").addEventListener("click", () => {
+        toggleFavorite(item.id);
+        openReaderModal(item.id);
+      });
+
+      const smaller = document.getElementById("fontSmallerBtn");
+      const larger = document.getElementById("fontLargerBtn");
+      if (smaller && larger) {
+        smaller.addEventListener("click", () => {
+          readerFontSize = Math.max(13, readerFontSize - 2);
+          document.getElementById("readerExcerptText").style.fontSize = readerFontSize + "px";
+        });
+        larger.addEventListener("click", () => {
+          readerFontSize = Math.min(24, readerFontSize + 2);
+          document.getElementById("readerExcerptText").style.fontSize = readerFontSize + "px";
+        });
+      }
+
+      document.getElementById("readerModal").classList.add("open");
+    }
+
+    function closeReaderModal() {
+      document.getElementById("readerModal").classList.remove("open");
+    }
+
+    // Spotlight Budaya
+    function renderSpotlight() {
+      const s = SPOTLIGHTS[spotlightIdx];
+      document.getElementById("spotlightJp").textContent = s.jp;
+      document.getElementById("spotlightRomaji").textContent = s.romaji;
+      document.getElementById("spotlightTitle").textContent = s.title;
+      document.getElementById("spotlightDesc").textContent = s.desc;
+    }
+
+    // Ensiklopedia Budaya Tabs
+    function renderCultureSection() {
+      const tabsEl = document.getElementById("cultureTabs");
+      const contentEl = document.getElementById("cultureContent");
+      const keys = Object.keys(CULTURE_ENCYCLOPEDIA);
+
+      tabsEl.innerHTML = keys
+        .map(
+          (k) => `<button class="pill ${k === activeCultureTab ? "active" : ""}" data-ctab="${escapeHtml(k)}">${escapeHtml(k)}</button>`
+        )
+        .join("");
+
+      tabsEl.querySelectorAll(".pill").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeCultureTab = btn.getAttribute("data-ctab");
+          renderCultureSection();
+        });
+      });
+
+      contentEl.innerHTML = CULTURE_ENCYCLOPEDIA[activeCultureTab]
+        .map(
+          (card) => `
+          <div class="culture-card">
+            <div class="jp-term serif-jp">${escapeHtml(card.jp)}</div>
+            <h4>${escapeHtml(card.title)}</h4>
+            <p>${escapeHtml(card.text)}</p>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    // Tambah Koleksi Baru
+    function handleAddCollection(e) {
+      e.preventDefault();
+      const title = document.getElementById("inputTitle").value.trim();
+      const jpTitle = document.getElementById("inputJpTitle").value.trim();
+      const author = document.getElementById("inputAuthor").value.trim();
+      const year = parseInt(document.getElementById("inputYear").value, 10) || 2025;
+      const category = document.getElementById("inputCategory").value;
+      const format = document.getElementById("inputFormat").value.trim() || "Arsip Digital";
+      const tagsRaw = document.getElementById("inputTags").value;
+      const summary = document.getElementById("inputSummary").value.trim();
+      const excerpt = document.getElementById("inputExcerpt").value.trim();
+      const externalUrl = document.getElementById("inputUrl").value.trim();
+
+      const motifs = ["torii", "fuji", "wave", "sakura", "bamboo", "enso"];
+      const palette = ["#b83b3b", "#3f6254", "#1f5a7a", "#4b3f72", "#8f3929"];
+
+      const newItem = {
+        id: "custom-" + Date.now(),
+        title,
+        jpTitle,
+        romaji: "",
+        author,
+        year,
+        category,
+        format,
+        motif: motifs[collections.length % motifs.length],
+        color: palette[collections.length % palette.length],
+        tags: tagsRaw
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+        summary,
+        culturalNote: "Koleksi pribadi yang ditambahkan ke Zamr Library.",
+        excerpt,
+        glossary: [],
+        externalUrl
+      };
+
+      collections.unshift(newItem);
+      saveCollections();
+      activeCategory = "Semua";
+      showFavsOnly = false;
+      document.getElementById("favFilterBtn").classList.remove("active");
+      renderCategories();
+      renderCatalog();
+      e.target.reset();
+      document.getElementById("addModal").classList.remove("open");
+      showToast("Koleksi baru berhasil ditambahkan!");
+    }
+
+    // Event Listeners
+    document.getElementById("themeToggleBtn").addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      applyTheme(current === "yoru" ? "washi" : "yoru");
+    });
+
+    document.getElementById("nextSpotlightBtn").addEventListener("click", () => {
+      spotlightIdx = (spotlightIdx + 1) % SPOTLIGHTS.length;
+      renderSpotlight();
+    });
+
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      document.getElementById("clearSearchBtn").style.display = searchQuery ? "inline-flex" : "none";
+      renderCatalog();
+    });
+
+    document.getElementById("clearSearchBtn").addEventListener("click", () => {
+      searchQuery = "";
+      document.getElementById("searchInput").value = "";
+      document.getElementById("clearSearchBtn").style.display = "none";
+      renderCatalog();
+    });
+
+    document.getElementById("sortSelect").addEventListener("change", (e) => {
+      sortMode = e.target.value;
+      renderCatalog();
+    });
+
+    document.getElementById("favFilterBtn").addEventListener("click", (e) => {
+      showFavsOnly = !showFavsOnly;
+      e.currentTarget.classList.toggle("active", showFavsOnly);
+      renderCatalog();
+    });
+
+    document.getElementById("resetFiltersBtn").addEventListener("click", () => {
+      activeCategory = "Semua";
+      searchQuery = "";
+      showFavsOnly = false;
+      document.getElementById("searchInput").value = "";
+      document.getElementById("clearSearchBtn").style.display = "none";
+      document.getElementById("favFilterBtn").classList.remove("active");
+      renderCategories();
+      renderCatalog();
+    });
+
+    document.getElementById("closeReaderBtn").addEventListener("click", closeReaderModal);
+    document.getElementById("readerModal").addEventListener("click", (e) => {
+      if (e.target.id === "readerModal") closeReaderModal();
+    });
+
+    document.getElementById("openAddModalBtn").addEventListener("click", () => {
+      document.getElementById("addModal").classList.add("open");
+    });
+    document.getElementById("closeAddModalBtn").addEventListener("click", () => {
+      document.getElementById("addModal").classList.remove("open");
+    });
+    document.getElementById("addModal").addEventListener("click", (e) => {
+      if (e.target.id === "addModal") document.getElementById("addModal").classList.remove("open");
+    });
+    document.getElementById("addCollectionForm").addEventListener("submit", handleAddCollection);
+
+    document.getElementById("exportJsonBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(collections, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "zamr-library-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Data berhasil diekspor ke JSON");
+    });
+
+    document.getElementById("importJsonInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!Array.isArray(data)) throw new Error("Format tidak valid");
+          collections = data;
+          saveCollections();
+          renderCategories();
+          renderCatalog();
+          showToast("Koleksi JSON berhasil diimpor!");
+        } catch (err) {
+          alert("File JSON tidak valid.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    document.getElementById("resetDataBtn").addEventListener("click", () => {
+      if (confirm("Kembalikan daftar koleksi ke bawaan awal?")) {
+        collections = structuredClone(DEFAULT_COLLECTIONS);
+        saveCollections();
+        activeCategory = "Semua";
+        renderCategories();
+        renderCatalog();
+        showToast("Koleksi dikembalikan ke awal");
+      }
+    });
+
+    // Inisialisasi
+    initTheme();
+    renderSpotlight();
+    renderCategories();
+    renderCatalog();
+    renderCultureSection();
+  </script>
+</body>
+</html>
